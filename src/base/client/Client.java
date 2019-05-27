@@ -57,7 +57,7 @@ public class Client implements Runnable {
     }
 
     public void sendJson(JSONObject jsonObject) {
-        
+
     }
 
 }
