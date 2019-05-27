@@ -39,6 +39,7 @@ public class Block {
         this.y = y;
     }
 
-
-
+    public int getBlockId() {
+        return blockId;
+    }
 }

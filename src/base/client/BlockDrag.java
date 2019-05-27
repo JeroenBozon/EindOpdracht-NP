@@ -7,8 +7,13 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import org.jfree.fx.FXGraphics2D;
 import org.jfree.fx.ResizableCanvas;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import java.awt.*;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -103,6 +108,27 @@ public class BlockDrag extends Application {
         }
         draw(new FXGraphics2D(canvasAttribute.getGraphicsContext2D()));
 
+    }
+
+    public void writeJson() {
+        JSONArray blockArrayInfo = new JSONArray();
+
+        for (Block block : this.blocks) {
+            JSONObject blockInfo = new JSONObject();
+            blockInfo.put("blockID", block.getBlockId());
+            blockInfo.put("blockX", block.getX());
+            blockInfo.put("blocky", block.getY());
+            blockArrayInfo.add(blockInfo);
+        }
+        JSONObject blockData = new JSONObject();
+
+        try {
+            PrintWriter file = new PrintWriter(new FileWriter("data.json"));
+            file.write(blockData.toJSONString());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

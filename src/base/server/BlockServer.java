@@ -1,6 +1,7 @@
 package base.server;
 
 import base.client.Client;
+import org.json.simple.JSONObject;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -64,6 +65,10 @@ public class BlockServer {
         }
 
         return true;
+    }
+
+    public void recieveJson(JSONObject jsonObject) {
+
     }
 
 }
