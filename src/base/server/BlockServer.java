@@ -1,8 +1,13 @@
 package base.server;
 
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -14,12 +19,28 @@ public class BlockServer {
     private Thread serverThread;
     private List<Client> clients;
     private List<Thread> threads;
+    private JSONObject blockData;
 
 
     public BlockServer(int port) {
         this.port = port;
         this.clients = new ArrayList<>();
         this.threads = new ArrayList<>();
+        this.readJson();
+    }
+
+    private void readJson() {
+        JSONParser parser = new JSONParser();
+        try (Reader reader = new FileReader("data.json")) {
+            JSONObject jsonObject = (JSONObject) parser.parse(reader);
+            this.blockData = jsonObject;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     public boolean start() {
@@ -67,7 +88,10 @@ public class BlockServer {
     }
 
     public void recieveJson(JSONObject jsonObject) {
-
+        this.blockData = jsonObject;
     }
 
+    public JSONObject getBlockData() {
+        return blockData;
+    }
 }

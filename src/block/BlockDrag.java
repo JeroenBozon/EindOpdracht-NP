@@ -1,5 +1,6 @@
 package block;
 
+import base.client.BlockClient;
 import base.server.Client;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -29,7 +30,7 @@ public class BlockDrag extends Application {
     private Block selectedBlock;
     private double xFromSelected;
     private double yFromSelected;
-    private Client client;
+    private BlockClient blockClient;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -72,7 +73,9 @@ public class BlockDrag extends Application {
     }
 
     private void setupClient() {
-        //todo setup client method
+        this.blockClient = new BlockClient("localhost", 10000);
+        this.blockClient.connect();
+        this.updateBlocks(this.blockClient.getBlockData());
     }
     
     

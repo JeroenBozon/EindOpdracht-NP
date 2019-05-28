@@ -1,9 +1,15 @@
 package base.client;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.Scanner;
 
 public class BlockClient {
@@ -11,7 +17,9 @@ public class BlockClient {
     private Socket socket;
     private String host;
     private int port;
-    private String name;
+    private DataInputStream in;
+    private DataOutputStream out;
+    private JSONObject blockData;
 
     public BlockClient(String host, int port) {
         this.host = host;
@@ -20,15 +28,16 @@ public class BlockClient {
 
     public boolean connect(){
         try {
+
             this.socket = new Socket(this.host, this.port);
 
-            DataInputStream dataInputStream = new DataInputStream( this.socket.getInputStream() );
-            DataOutputStream dataOutputStream = new DataOutputStream( this.socket.getOutputStream() );
+            this.in = new DataInputStream( this.socket.getInputStream() );
+            this.out = new DataOutputStream( this.socket.getOutputStream() );
 
-            Scanner scanner = new Scanner( System.in );
-
-            String server = dataInputStream.readUTF();
-            System.out.println(server);
+//            Scanner scanner = new Scanner( System.in );
+//
+//            String server = dataInputStream.readUTF();
+//            System.out.println(server);
 
             //HIERONDER WORDT EEN NAAM GEGEVEN AAN DE this.name ZODAT IEMAND EEN NAAM HEEFT
 
@@ -36,13 +45,20 @@ public class BlockClient {
 //            this.name = scanner.nextLine();
 //            dataOutputStream.writeUTF(this.name);
 
+            JSONParser parser = new JSONParser();
             new Thread ( () -> {
                 while ( true ) {
                     try {
-                        System.out.println(dataInputStream.readUTF());
+                        //System.out.println(this.in.readUTF());
+                        System.out.println(this.in.readUTF() + "\n");
+                        //this.blockData = (JSONObject) parser.parse(this.in.readUTF());
 
+//                    } catch (EOFException e) {
+//                        e.printStackTrace();
                     } catch (IOException e) {
                         e.printStackTrace();
+//                    } catch (ParseException e) {
+//                        e.printStackTrace();
                     }
                 }
             }).start();
@@ -58,13 +74,29 @@ public class BlockClient {
 //                //System.dataOutputStream.println("Server response: " + dataInputStream.readUTF());
 //            }
 
-            this.socket.close();
+            //this.socket.close();
 
-        } catch (IOException e) {
+        } catch (EOFException e) {
             System.out.println("Could not connect with the server on " + this.host + " with port " + this.port + ": " + e.getMessage());
             return false;
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         return true;
+    }
+
+    private void sendBlockData(JSONObject jsonObject) {
+        try {
+            this.out.writeUTF(jsonObject.toJSONString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public JSONObject getBlockData() {
+        return blockData;
     }
 }
