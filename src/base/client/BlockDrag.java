@@ -11,6 +11,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.awt.*;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -27,9 +28,11 @@ public class BlockDrag extends Application {
     private Block selectedBlock;
     private double xFromSelected;
     private double yFromSelected;
+    private Client client;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        this.setupClient();
 
         BorderPane mainPane = new BorderPane();
         ResizableCanvas canvas = new ResizableCanvas(g -> draw(g), mainPane);
@@ -61,6 +64,10 @@ public class BlockDrag extends Application {
         canvas.setOnMouseDragged(e -> mouseDragged(e));
 
 
+    }
+
+    private void setupClient() {
+        //todo setup client method
     }
     
     
@@ -107,10 +114,10 @@ public class BlockDrag extends Application {
             selectedBlock.setY((int)(e.getY() - yFromSelected));
         }
         draw(new FXGraphics2D(canvasAttribute.getGraphicsContext2D()));
-
+        this.client.sendJson(this.writeJson());
     }
 
-    public void writeJson() {
+    private JSONObject writeJson() {
         JSONArray blockArrayInfo = new JSONArray();
 
         for (Block block : this.blocks) {
@@ -121,14 +128,20 @@ public class BlockDrag extends Application {
             blockArrayInfo.add(blockInfo);
         }
         JSONObject blockData = new JSONObject();
+        blockData.put("blockdata", blockArrayInfo);
+        //return blockData;
 
         try {
-            PrintWriter file = new PrintWriter(new FileWriter("data.json"));
+            File saveFile = new File("data.json");
+            PrintWriter file = new PrintWriter(new FileWriter(saveFile));
             file.write(blockData.toJSONString());
-
+            System.out.println("printed");
+            file.flush();
+            file.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return blockData;
     }
 
 }
