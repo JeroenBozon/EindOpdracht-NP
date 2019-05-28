@@ -2,7 +2,7 @@ package base;
 
 import base.server.BlockServer;
 
-public class Main {
+public class ServerMain {
 
     public static void main(String[] args) {
 

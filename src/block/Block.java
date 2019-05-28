@@ -42,4 +42,8 @@ public class Block {
     public int getBlockId() {
         return blockId;
     }
+
+    public void setBlockId(int blockId) {
+        this.blockId = blockId;
+    }
 }

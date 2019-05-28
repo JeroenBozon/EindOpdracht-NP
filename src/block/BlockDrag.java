@@ -1,5 +1,6 @@
 package block;
 
+import base.server.Client;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
@@ -54,6 +55,10 @@ public class BlockDrag extends Application {
         blocks.add(new Block(random.nextInt((int)canvas.getWidth() - cubeSize), random.nextInt((int)canvas.getHeight() - cubeSize), Color.YELLOW));
         canvasAttribute = canvas;
 
+        for (int i = 0; i < this.blocks.size(); i++) {
+            this.blocks.get(i).setBlockId(i);
+        }
+
         draw(new FXGraphics2D(canvas.getGraphicsContext2D()));
         primaryStage.setScene(new Scene(mainPane));
         primaryStage.setTitle("Block Dragging");
@@ -84,8 +89,6 @@ public class BlockDrag extends Application {
 
     }
     
-    
-    
     public static void main(String[] args) {
         launch(BlockDrag.class);
     }
@@ -114,7 +117,8 @@ public class BlockDrag extends Application {
             selectedBlock.setY((int)(e.getY() - yFromSelected));
         }
         draw(new FXGraphics2D(canvasAttribute.getGraphicsContext2D()));
-        this.client.sendJson(this.writeJson());
+        //this.client.sendJson(this.writeJson());
+        this.updateBlocks(this.writeJson());
     }
 
     private JSONObject writeJson() {
@@ -124,7 +128,7 @@ public class BlockDrag extends Application {
             JSONObject blockInfo = new JSONObject();
             blockInfo.put("blockID", block.getBlockId());
             blockInfo.put("blockX", block.getX());
-            blockInfo.put("blocky", block.getY());
+            blockInfo.put("blockY", block.getY());
             blockArrayInfo.add(blockInfo);
         }
         JSONObject blockData = new JSONObject();
@@ -142,6 +146,20 @@ public class BlockDrag extends Application {
             e.printStackTrace();
         }
         return blockData;
+    }
+
+    public void updateBlocks(JSONObject blockData) {
+        JSONArray jsonArray = (JSONArray) blockData.get("blockdata");
+
+        for (Block block : this.blocks) {
+            for (int i = 0; i < jsonArray.size(); i++) {
+                JSONObject jsonObject = (JSONObject) jsonArray.get(i);
+                if (jsonObject.get("blockID").equals(block.getBlockId())) {
+                    block.setX((int) jsonObject.get("blockX"));
+                    block.setY((int) jsonObject.get("blockY"));
+                }
+            }
+        }
     }
 
 }
