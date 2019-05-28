@@ -48,12 +48,12 @@ public class BlockClient {
                     try {
                         //reads utf
                         //todo read utf
-                        System.out.println(this.in.readUTF() + "\n");
                         //this.blockData = (JSONObject) parser.parse(this.in.readUTF());
 
                         String input = this.in.readUTF();
                         Scanner scanner = new Scanner(input);
-                        System.out.println(scanner.next());
+                        this.blockData = (JSONObject) parser.parse(scanner.next());
+                        //todo detect and handle failed json strings
 
 //                        while (input.contains("start")) {
 //                            input += this.in.readUTF();
@@ -63,15 +63,15 @@ public class BlockClient {
 //                                break;
 //                            }
 //                        }
-                        input = input.substring(input.indexOf("start"), input.indexOf("stop"));
-                        System.out.println(input + "\n");
+//                        input = input.substring(input.indexOf("start"), input.indexOf("stop"));
+//                        System.out.println(input + "\n");
 
 //                    } catch (EOFException e) {
 //                        e.printStackTrace();
                     } catch (IOException e) {
                         e.printStackTrace();
-//                    } catch (ParseException e) {
-//                        e.printStackTrace();
+                    } catch (ParseException e) {
+                        e.printStackTrace();
                     }
                 }
             }).start();
