@@ -1,4 +1,4 @@
-package base.client;
+package base.server;
 
 import base.server.BlockServer;
 import org.json.simple.JSONObject;

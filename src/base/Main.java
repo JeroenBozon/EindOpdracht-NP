@@ -11,7 +11,13 @@ public class Main {
         blockServer.start();
 
         while (true) {
+            try {
+                Thread.sleep(10000);
 
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            Thread.yield();
         }
 
     }

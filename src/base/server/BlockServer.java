@@ -1,6 +1,5 @@
 package base.server;
 
-import base.client.Client;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;

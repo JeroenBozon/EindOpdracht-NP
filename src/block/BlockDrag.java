@@ -1,4 +1,4 @@
-package base.client;
+package block;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
