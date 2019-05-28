@@ -4,10 +4,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.EOFException;
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Scanner;
@@ -49,9 +46,25 @@ public class BlockClient {
             new Thread ( () -> {
                 while ( true ) {
                     try {
-                        //System.out.println(this.in.readUTF());
+                        //reads utf
+                        //todo read utf
                         System.out.println(this.in.readUTF() + "\n");
                         //this.blockData = (JSONObject) parser.parse(this.in.readUTF());
+
+                        String input = this.in.readUTF();
+                        Scanner scanner = new Scanner(input);
+                        System.out.println(scanner.next());
+
+//                        while (input.contains("start")) {
+//                            input += this.in.readUTF();
+//                            if (input.contains("stop")) {
+//                                input = input.substring(input.indexOf("start"), input.indexOf("stop"));
+//                                System.out.println(input + "\n");
+//                                break;
+//                            }
+//                        }
+                        input = input.substring(input.indexOf("start"), input.indexOf("stop"));
+                        System.out.println(input + "\n");
 
 //                    } catch (EOFException e) {
 //                        e.printStackTrace();

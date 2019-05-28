@@ -36,6 +36,7 @@ public class Client implements Runnable {
             while (true) {
                 //writer.write(this.blockData.toJSONString());
                 this.sendJson(this.server.getBlockData());
+                //Thread.sleep(200);
                 //writer.write("yeet\n");
                 //writer.flush();
 
@@ -48,6 +49,8 @@ public class Client implements Runnable {
 
         } catch (IOException e) {
             e.printStackTrace();
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
         }
 
 
@@ -80,10 +83,12 @@ public class Client implements Runnable {
 
     }
 
+    //sends utf
     public void sendJson(JSONObject jsonObject) {
         //todo send json to server
         try {
-            this.writer.write(jsonObject.toJSONString());
+            this.writer.write("\n" + jsonObject.toJSONString() + "\n");
+            this.writer.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }

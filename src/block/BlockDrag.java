@@ -75,7 +75,7 @@ public class BlockDrag extends Application {
     private void setupClient() {
         this.blockClient = new BlockClient("localhost", 10000);
         this.blockClient.connect();
-        this.updateBlocks(this.blockClient.getBlockData());
+        //this.updateBlocks(this.blockClient.getBlockData());
     }
     
     
