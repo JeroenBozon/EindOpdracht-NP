@@ -48,8 +48,9 @@ public class BlockClient {
                                 scanner.useDelimiter(">");
                                 input = scanner.next();
                                 input = input.substring(1);
-                                System.out.println(input);
+                                //System.out.println(input);
                                 this.blockData = (JSONObject) parser.parse(input);
+                                //todo properly pass this object to blockdrag
                                 break;
                             }
                         }
@@ -70,17 +71,6 @@ public class BlockClient {
                     }
                 }
             }).start();
-
-            //HIER ONER IS VOOR HET STOPPEN VAN DE CLIENT DUS ALS JE STOP INVOERT STOPT HET
-
-//            String message = "";
-//            while ( !message.equals("stop" ) ) {
-//                System.out.print("> ");
-//                message = scanner.nextLine();
-//                dataOutputStream.writeUTF(message);
-//
-//                //System.dataOutputStream.println("Server response: " + dataInputStream.readUTF());
-//            }
 
             //this.socket.close();
 

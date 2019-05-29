@@ -31,10 +31,11 @@ public class BlockDrag extends Application {
     private double xFromSelected;
     private double yFromSelected;
     private BlockClient blockClient;
+    private FXGraphics2D graphics;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        this.setupClient();
+        //this.setupClient();
 
         BorderPane mainPane = new BorderPane();
         ResizableCanvas canvas = new ResizableCanvas(g -> draw(g), mainPane);
@@ -60,7 +61,8 @@ public class BlockDrag extends Application {
             this.blocks.get(i).setBlockId(i);
         }
 
-        draw(new FXGraphics2D(canvas.getGraphicsContext2D()));
+        this.graphics = new FXGraphics2D(this.canvasAttribute.getGraphicsContext2D());
+
         primaryStage.setScene(new Scene(mainPane));
         primaryStage.setTitle("Block Dragging");
         primaryStage.show();
@@ -69,7 +71,8 @@ public class BlockDrag extends Application {
         canvas.setOnMouseReleased(e -> mouseReleased(e));
         canvas.setOnMouseDragged(e -> mouseDragged(e));
 
-
+        this.setupClient();
+        this.draw(this.graphics);
     }
 
     private void setupClient() {
@@ -133,9 +136,9 @@ public class BlockDrag extends Application {
             selectedBlock.setX((int)(e.getX() - xFromSelected));
             selectedBlock.setY((int)(e.getY() - yFromSelected));
         }
-        draw(new FXGraphics2D(canvasAttribute.getGraphicsContext2D()));
+        draw(this.graphics);
         //this.client.sendJson(this.writeJson());
-        this.updateBlocks(this.writeJson());
+        //this.updateBlocks(this.writeJson()); todo gebruik updateblocks maar niet zoals hier
     }
 
     private JSONObject writeJson() {
@@ -167,18 +170,30 @@ public class BlockDrag extends Application {
         }
     }
 
+    //todo werkt voor geen meter
     public void updateBlocks(JSONObject blockData) {
         JSONArray jsonArray = (JSONArray) blockData.get("blockdata");
 
         for (Block block : this.blocks) {
             for (int i = 0; i < jsonArray.size(); i++) {
                 JSONObject jsonObject = (JSONObject) jsonArray.get(i);
-                if (jsonObject.get("blockID").equals(block.getBlockId())) {
-                    block.setX((int) jsonObject.get("blockX"));
-                    block.setY((int) jsonObject.get("blockY"));
+                //System.out.println(Math.toIntExact( (long) jsonObject.get("blockID")) );
+                if ( this.getJsonInt(jsonObject.get("blockID")) == block.getBlockId() ) {
+                    block.setX(this.getJsonInt(jsonObject.get("blockX")));
+                    block.setY(this.getJsonInt(jsonObject.get("blockY")));
                 }
             }
         }
+    }
+
+    //todo liever niet dit
+    private int getJsonInt(Object object) {
+        try {
+            return Math.toIntExact( (long) object);
+        } catch (Exception e) {
+            System.out.println("Could not convert to int!");
+        }
+        return -1;
     }
 
 }
