@@ -73,9 +73,23 @@ public class BlockDrag extends Application {
     }
 
     private void setupClient() {
+        boolean dataReceived = false;
         this.blockClient = new BlockClient("localhost", 10000);
         this.blockClient.connect();
-        //this.updateBlocks(this.blockClient.getBlockData());
+
+        while (!dataReceived) {
+            try {
+                this.updateBlocks(this.blockClient.getBlockData());
+                dataReceived = true;
+            } catch (NullPointerException e) {
+                System.out.println("Block data is not available yet, retrying in 5 seconds...");
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        }
     }
     
     
@@ -136,8 +150,11 @@ public class BlockDrag extends Application {
         }
         JSONObject blockData = new JSONObject();
         blockData.put("blockdata", blockArrayInfo);
-        //return blockData;
 
+        return blockData;
+    }
+
+    private void saveJson(JSONObject blockData) {
         try {
             File saveFile = new File("data.json");
             PrintWriter file = new PrintWriter(new FileWriter(saveFile));
@@ -148,7 +165,6 @@ public class BlockDrag extends Application {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return blockData;
     }
 
     public void updateBlocks(JSONObject blockData) {

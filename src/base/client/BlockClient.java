@@ -1,5 +1,7 @@
 package base.client;
 
+import block.BlockDrag;
+import javafx.application.Application;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -23,55 +25,48 @@ public class BlockClient {
         this.port = port;
     }
 
-    public boolean connect(){
+    public boolean connect() {
         try {
-
             this.socket = new Socket(this.host, this.port);
-
-            this.in = new DataInputStream( this.socket.getInputStream() );
-            this.out = new DataOutputStream( this.socket.getOutputStream() );
-
-//            Scanner scanner = new Scanner( System.in );
-//
-//            String server = dataInputStream.readUTF();
-//            System.out.println(server);
-
-            //HIERONDER WORDT EEN NAAM GEGEVEN AAN DE this.name ZODAT IEMAND EEN NAAM HEEFT
-
-//            System.out.print("What is your name: ");
-//            this.name = scanner.nextLine();
-//            dataOutputStream.writeUTF(this.name);
-
+            this.in = new DataInputStream(this.socket.getInputStream());
+            this.out = new DataOutputStream(this.socket.getOutputStream());
             JSONParser parser = new JSONParser();
-            new Thread ( () -> {
-                while ( true ) {
+
+            /**
+             * This thread parses the complete json text
+             */
+            new Thread(() -> {
+                while (true) {
                     try {
-                        //reads utf
-                        //todo read utf
-                        //this.blockData = (JSONObject) parser.parse(this.in.readUTF());
-
                         String input = this.in.readUTF();
-                        Scanner scanner = new Scanner(input);
-                        this.blockData = (JSONObject) parser.parse(scanner.next());
-                        //todo detect and handle failed json strings
+                        while (input.contains("<")) {
+                            input += this.in.readUTF();
+                            if (input.contains(">")) {
+                                Scanner scanner = new Scanner(input);
+                                scanner.useDelimiter("<");
+                                scanner.next();
+                                scanner.useDelimiter(">");
+                                input = scanner.next();
+                                input = input.substring(1);
+                                System.out.println(input);
+                                this.blockData = (JSONObject) parser.parse(input);
+                                break;
+                            }
+                        }
 
-//                        while (input.contains("start")) {
-//                            input += this.in.readUTF();
-//                            if (input.contains("stop")) {
-//                                input = input.substring(input.indexOf("start"), input.indexOf("stop"));
-//                                System.out.println(input + "\n");
-//                                break;
-//                            }
+//                        if (!launched) {
+//                            new Thread(() -> {
+//                                Application.launch(BlockDrag.class);
+//                            }).start(); //todo sync blocks
+//                            launched = true;
 //                        }
-//                        input = input.substring(input.indexOf("start"), input.indexOf("stop"));
-//                        System.out.println(input + "\n");
 
-//                    } catch (EOFException e) {
-//                        e.printStackTrace();
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        //e.printStackTrace();
+                        System.out.println("ioexception");
                     } catch (ParseException e) {
-                        e.printStackTrace();
+                        //e.printStackTrace();
+                        System.out.println("parseexception");
                     }
                 }
             }).start();
@@ -109,7 +104,7 @@ public class BlockClient {
         }
     }
 
-    public JSONObject getBlockData() {
+    public JSONObject getBlockData() throws NullPointerException {
         return blockData;
     }
 }

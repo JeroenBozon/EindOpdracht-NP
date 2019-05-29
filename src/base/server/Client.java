@@ -87,7 +87,7 @@ public class Client implements Runnable {
     public void sendJson(JSONObject jsonObject) {
         //todo send json to server
         try {
-            this.writer.write("\n" + jsonObject.toJSONString() + "\n");
+            this.writer.write("<" + jsonObject.toJSONString() + ">");
             this.writer.flush();
         } catch (IOException e) {
             e.printStackTrace();
