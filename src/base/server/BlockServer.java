@@ -57,6 +57,7 @@ public class BlockServer {
                         Client client = new Client(socket, this);
                         Thread threadClient = new Thread(client);
                         threadClient.start();
+
                         this.clients.add(client);
                         this.threads.add(threadClient);
 

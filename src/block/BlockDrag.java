@@ -1,6 +1,7 @@
 package block;
 
 import base.client.BlockClient;
+import base.server.Client;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -41,7 +42,6 @@ public class BlockDrag extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        //this.setupClient();
 
         BorderPane mainPane = new BorderPane();
         ResizableCanvas canvas = new ResizableCanvas(g -> draw(g), mainPane);
@@ -66,7 +66,7 @@ public class BlockDrag extends Application {
         receiveFromServerButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-
+                updateBlocks(blockClient.getBlockData());
             }
         });
 
@@ -217,6 +217,8 @@ public class BlockDrag extends Application {
                 }
             }
         }
+
+        this.draw(this.graphics);
     }
 
     //todo liever niet dit

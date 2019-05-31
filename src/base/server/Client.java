@@ -34,53 +34,12 @@ public class Client implements Runnable {
             BufferedReader reader = new BufferedReader(new InputStreamReader(this.in));
 
             while (true) {
-                //writer.write(this.blockData.toJSONString());
                 this.sendJson(this.server.getBlockData());
-                //Thread.sleep(200);
-                //writer.write("yeet\n");
-                //writer.flush();
-
-//                String line = null;
-//                while ((line = reader.readLine()) != null) {
-//
-//                }
-
             }
 
         } catch (IOException e) {
             e.printStackTrace();
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
         }
-
-
-//        try {
-//            this.in  = new DataInputStream( this.socket.getInputStream() );
-//            this.out = new DataOutputStream( this.socket.getOutputStream() );
-//
-//            //out.writeUTF("Avans ChatServer 1.2.3.4");
-//
-//            //this.name = in.readUTF();
-//            //System.out.println("#### " + this.name + " joined the chat!");
-////            this.server.sendToAllClients("#### " + this.name + " joined the chat!");
-//
-////            String message = "";
-////            while ( !message.equals("stop") ) {
-////                message = in.readUTF();
-////                out.writeUTF(message);
-////                System.out.println("Client send: " + message);
-////                this.server.sendToAllClients("(" + this.name + "): " + message);
-//
-//            //}
-//
-//            this.socket.close();
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-
-
-
     }
 
     //sends utf
