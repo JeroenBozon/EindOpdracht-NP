@@ -78,55 +78,6 @@ public class BlockServer {
 
             }).start();
 
-            JSONParser parser = new JSONParser();
-            System.out.println("before new thread");
-
-            new Thread(() -> {
-                System.out.println("Update blockdata started");
-
-                try {
-                    System.out.println("Looking for server.accept()");
-                    Socket socket = new Socket(server.getInetAddress(), server.getLocalPort());
-                    System.out.println("onder socket");
-
-                    this.in = new DataInputStream(socket.getInputStream());
-
-                    while(true) {
-
-                        String input = "";
-                        input = this.in.readUTF();
-
-                        while (input.contains("<")) {
-                            input += this.in.readUTF();
-                            if (input.contains(">")) {
-                                Scanner scanner = new Scanner(input);
-                                scanner.useDelimiter("<");
-                                scanner.next();
-                                scanner.useDelimiter(">");
-                                input = scanner.next();
-                                input = input.substring(1);
-
-                                //System.out.println(input);
-                                System.out.println(input);
-                                this.blockData = (JSONObject) parser.parse(input);
-                                System.out.println("Blockserver: blockdata updated");
-                                //todo make blockserver actually update the blockdata
-                                break;
-                            }
-                        }
-                        Thread.sleep(100);
-                    }
-
-                } catch (IOException e) {
-                    //e.printStackTrace();
-                    System.out.println("ioexception");
-                } catch (ParseException e) {
-                    //e.printStackTrace();
-                    System.out.println("parseexception");
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }).start();
 
             System.out.println("Server is started and listening on port " + this.port);
 
@@ -142,7 +93,7 @@ public class BlockServer {
         this.clients.remove(client);
     }
 
-    public void recieveJson(JSONObject jsonObject) {
+    public void receiveJson(JSONObject jsonObject) {
         this.blockData = jsonObject;
         System.out.println("Received JSON");
     }
