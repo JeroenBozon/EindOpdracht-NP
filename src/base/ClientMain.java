@@ -8,7 +8,5 @@ public class ClientMain {
 
     public static void main(String[] args) {
         Application.launch(BlockDrag.class, args);
-
-        System.out.println("App closed");
     }
 }

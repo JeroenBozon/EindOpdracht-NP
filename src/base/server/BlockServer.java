@@ -52,7 +52,7 @@ public class BlockServer {
                 while (true) {
                     System.out.println("Waiting for clients to connect.");
                     try {
-                        socket = this.server.accept();
+                        socket = server.accept();
                         System.out.println("Client connected from " + socket.getInetAddress().getHostAddress() + ".");
 
                         Client client = new Client(socket, this);
@@ -85,7 +85,8 @@ public class BlockServer {
                 System.out.println("Update blockdata started");
 
                 try {
-                    this.socket = this.server.accept();
+                    System.out.println("Looking for server.accept()");
+                    Socket socket = new Socket(server.getInetAddress(), server.getLocalPort());
                     System.out.println("onder socket");
 
                     this.in = new DataInputStream(socket.getInputStream());
@@ -95,11 +96,8 @@ public class BlockServer {
                         String input = "";
                         input = this.in.readUTF();
 
-                        System.out.println("In first while loop: " + input);
-
                         while (input.contains("<")) {
                             input += this.in.readUTF();
-                            System.out.println("In second while loop: " + input);
                             if (input.contains(">")) {
                                 Scanner scanner = new Scanner(input);
                                 scanner.useDelimiter("<");
@@ -109,13 +107,14 @@ public class BlockServer {
                                 input = input.substring(1);
 
                                 //System.out.println(input);
-
+                                System.out.println(input);
                                 this.blockData = (JSONObject) parser.parse(input);
                                 System.out.println("Blockserver: blockdata updated");
                                 //todo make blockserver actually update the blockdata
                                 break;
                             }
                         }
+                        Thread.sleep(100);
                     }
 
                 } catch (IOException e) {
@@ -124,6 +123,8 @@ public class BlockServer {
                 } catch (ParseException e) {
                     //e.printStackTrace();
                     System.out.println("parseexception");
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }).start();
 
