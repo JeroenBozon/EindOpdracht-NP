@@ -1,11 +1,15 @@
 package block;
 
 import base.client.BlockClient;
-import base.server.Client;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.jfree.fx.FXGraphics2D;
 import org.jfree.fx.ResizableCanvas;
@@ -32,6 +36,8 @@ public class BlockDrag extends Application {
     private double yFromSelected;
     private BlockClient blockClient;
     private FXGraphics2D graphics;
+    private Button sendToServerButton;
+    private Button receiveFromServerButton;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -40,6 +46,31 @@ public class BlockDrag extends Application {
         BorderPane mainPane = new BorderPane();
         ResizableCanvas canvas = new ResizableCanvas(g -> draw(g), mainPane);
         mainPane.setCenter(canvas);
+
+        VBox vBox = new VBox();
+        HBox hBox = new HBox();
+
+        sendToServerButton = new Button();
+        receiveFromServerButton = new Button();
+
+        sendToServerButton.setText("Send positions to server!");
+        receiveFromServerButton.setText("Receive positions from server!");
+
+        sendToServerButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+
+            }
+        });
+
+        receiveFromServerButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+
+            }
+        });
+
+        hBox.getChildren().addAll(sendToServerButton, receiveFromServerButton);
 
         cubeSize = 50;
         Random random = new Random();
@@ -63,7 +94,9 @@ public class BlockDrag extends Application {
 
         this.graphics = new FXGraphics2D(this.canvasAttribute.getGraphicsContext2D());
 
-        primaryStage.setScene(new Scene(mainPane));
+        vBox.getChildren().addAll(mainPane, hBox);
+
+        primaryStage.setScene(new Scene(vBox));
         primaryStage.setTitle("Block Dragging");
         primaryStage.show();
         
