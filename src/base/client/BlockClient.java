@@ -59,6 +59,7 @@ public class BlockClient {
                                 break;
                             }
                         }
+                        //this.sendBlockData(this.blockData);
 
 //                        if (!launched) {
 //                            new Thread(() -> {
