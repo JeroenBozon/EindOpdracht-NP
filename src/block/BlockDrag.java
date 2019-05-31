@@ -172,8 +172,6 @@ public class BlockDrag extends Application {
             selectedBlock.setY((int)(e.getY() - yFromSelected));
         }
         draw(this.graphics);
-        //this.client.sendJson(this.writeJson());
-        //this.updateBlocks(this.writeJson()); todo gebruik updateblocks maar niet zoals hier
     }
 
     private JSONObject writeJson() {
@@ -185,10 +183,12 @@ public class BlockDrag extends Application {
             blockInfo.put("blockX", block.getX());
             blockInfo.put("blockY", block.getY());
             blockArrayInfo.add(blockInfo);
+            System.out.println("Block updated");
         }
         JSONObject blockData = new JSONObject();
         blockData.put("blockdata", blockArrayInfo);
 
+        System.out.println("Data updated");
         return blockData;
     }
 
@@ -205,7 +205,6 @@ public class BlockDrag extends Application {
         }
     }
 
-    //todo werkt voor geen meter
     public void updateBlocks(JSONObject blockData) {
         JSONArray jsonArray = (JSONArray) blockData.get("blockdata");
 

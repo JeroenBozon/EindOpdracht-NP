@@ -53,13 +53,15 @@ public class BlockClient {
                                 scanner.useDelimiter(">");
                                 input = scanner.next();
                                 input = input.substring(1);
+
                                 //System.out.println(input);
+
                                 this.blockData = (JSONObject) parser.parse(input);
                                 //todo properly pass this object to blockdrag
                                 break;
                             }
                         }
-                        //this.sendBlockData(this.blockData);
+
 
 //                        if (!launched) {
 //                            new Thread(() -> {
@@ -76,7 +78,9 @@ public class BlockClient {
                         System.out.println("parseexception");
                     }
                 }
+
             }).start();
+            this.sendBlockData(this.blockData);
 
             //this.socket.close();
 
@@ -97,12 +101,28 @@ public class BlockClient {
     }
 
     public void sendBlockData(JSONObject jsonObject) {
-        try {
-            this.writer.write("<" + jsonObject.toJSONString() + ">");
-            this.writer.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        System.out.println("try sendBlockData");
+
+        new Thread(() -> {
+            while(running) {
+                try {
+                    this.writer.write("<" + jsonObject.toJSONString() + ">");
+                    this.writer.flush();
+
+                    System.out.println("try done");
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (NullPointerException e){
+                    System.out.println("Data not available yet");
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            }
+        }).start();
     }
 
     public JSONObject getBlockData() throws NullPointerException {

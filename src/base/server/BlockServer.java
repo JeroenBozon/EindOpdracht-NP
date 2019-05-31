@@ -4,23 +4,23 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class BlockServer {
     private ServerSocket server;
     private int port;
-    private Thread serverThread;
+    private Thread serverUserSearchThread;
+    private Thread serverDataThread;
     private List<Client> clients;
     private List<Thread> threads;
     private JSONObject blockData;
-
+    private DataInputStream in;
+    private Socket socket;
 
     public BlockServer(int port) {
         this.port = port;
@@ -34,6 +34,7 @@ public class BlockServer {
         try (Reader reader = new FileReader("data.json")) {
             JSONObject jsonObject = (JSONObject) parser.parse(reader);
             this.blockData = jsonObject;
+            System.out.println("Read JSON");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -47,11 +48,11 @@ public class BlockServer {
         try {
             this.server = new ServerSocket(port);
 
-            this.serverThread = new Thread(() -> {
+            new Thread(() -> {
                 while (true) {
                     System.out.println("Waiting for clients to connect.");
                     try {
-                        Socket socket = this.server.accept();
+                        socket = this.server.accept();
                         System.out.println("Client connected from " + socket.getInetAddress().getHostAddress() + ".");
 
                         Client client = new Client(socket, this);
@@ -75,9 +76,57 @@ public class BlockServer {
                     Thread.yield();
                 }
 
-            });
+            }).start();
 
-            this.serverThread.start();
+            JSONParser parser = new JSONParser();
+            System.out.println("before new thread");
+
+            new Thread(() -> {
+                System.out.println("Update blockdata started");
+
+                try {
+                    this.socket = this.server.accept();
+                    System.out.println("onder socket");
+
+                    this.in = new DataInputStream(socket.getInputStream());
+
+                    while(true) {
+
+                        String input = "";
+                        input = this.in.readUTF();
+
+                        System.out.println("In first while loop: " + input);
+
+                        while (input.contains("<")) {
+                            input += this.in.readUTF();
+                            System.out.println("In second while loop: " + input);
+                            if (input.contains(">")) {
+                                Scanner scanner = new Scanner(input);
+                                scanner.useDelimiter("<");
+                                scanner.next();
+                                scanner.useDelimiter(">");
+                                input = scanner.next();
+                                input = input.substring(1);
+
+                                //System.out.println(input);
+
+                                this.blockData = (JSONObject) parser.parse(input);
+                                System.out.println("Blockserver: blockdata updated");
+                                //todo make blockserver actually update the blockdata
+                                break;
+                            }
+                        }
+                    }
+
+                } catch (IOException e) {
+                    //e.printStackTrace();
+                    System.out.println("ioexception");
+                } catch (ParseException e) {
+                    //e.printStackTrace();
+                    System.out.println("parseexception");
+                }
+            }).start();
+
             System.out.println("Server is started and listening on port " + this.port);
 
         } catch (IOException e) {
@@ -94,6 +143,7 @@ public class BlockServer {
 
     public void recieveJson(JSONObject jsonObject) {
         this.blockData = jsonObject;
+        System.out.println("Received JSON");
     }
 
     public JSONObject getBlockData() {
