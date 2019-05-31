@@ -59,7 +59,10 @@ public class BlockDrag extends Application {
         sendToServerButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                //blockClient.sendBlockData(writeJson());
+                //todo, updates data to send
                 blockClient.sendBlockData(writeJson());
+
             }
         });
 
@@ -211,7 +214,6 @@ public class BlockDrag extends Application {
         for (Block block : this.blocks) {
             for (int i = 0; i < jsonArray.size(); i++) {
                 JSONObject jsonObject = (JSONObject) jsonArray.get(i);
-                //System.out.println(Math.toIntExact( (long) jsonObject.get("blockID")) );
                 if ( this.getJsonInt(jsonObject.get("blockID")) == block.getBlockId() ) {
                     block.setX(this.getJsonInt(jsonObject.get("blockX")));
                     block.setY(this.getJsonInt(jsonObject.get("blockY")));

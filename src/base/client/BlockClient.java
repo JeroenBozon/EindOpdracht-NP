@@ -57,18 +57,11 @@ public class BlockClient {
                                 //System.out.println(input);
 
                                 this.blockData = (JSONObject) parser.parse(input);
+                                System.out.println("BlockCLient: blockdata updated" + this.blockData.toJSONString());
                                 //todo properly pass this object to blockdrag
                                 break;
                             }
                         }
-
-
-//                        if (!launched) {
-//                            new Thread(() -> {
-//                                Application.launch(BlockDrag.class);
-//                            }).start(); //todo sync blocks
-//                            launched = true;
-//                        }
 
                     } catch (IOException e) {
                         //e.printStackTrace();
@@ -80,9 +73,15 @@ public class BlockClient {
                 }
 
             }).start();
-            this.sendBlockData(this.blockData);
+            //this.sendBlockData(this.blockData);
 
             //this.socket.close();
+            new Thread(()-> {
+                while (this.running) {
+                    this.sendBlockData(this.blockData);
+                }
+            }).start();
+
 
         } catch (EOFException e) {
             System.out.println("Could not connect with the server on " + this.host + " with port " + this.port + ": " + e.getMessage());
@@ -101,15 +100,15 @@ public class BlockClient {
     }
 
     public void sendBlockData(JSONObject jsonObject) {
-        System.out.println("try sendBlockData");
+        //System.out.println("try sendBlockData");
 
-        new Thread(() -> {
-            while(running) {
+        //new Thread(() -> {
+            //while(running) {
                 try {
                     this.writer.write("<" + jsonObject.toJSONString() + ">");
                     this.writer.flush();
 
-                    System.out.println("try done");
+                    //System.out.println("try done");
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -121,11 +120,15 @@ public class BlockClient {
                         e1.printStackTrace();
                     }
                 }
-            }
-        }).start();
+            //}
+        //}).start();
     }
 
     public JSONObject getBlockData() throws NullPointerException {
         return blockData;
+    }
+
+    public void setBlockData(JSONObject blockData) {
+        this.blockData = blockData;
     }
 }

@@ -30,17 +30,31 @@ public class Client implements Runnable {
 
     @Override
     public void run() {
+
+        try {
+            this.in = new DataInputStream(this.socket.getInputStream());
+            this.out = new DataOutputStream(this.socket.getOutputStream());
+            this.writer = new OutputStreamWriter(this.out, StandardCharsets.UTF_8);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(this.in));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         JSONParser parser = new JSONParser();
 
         new Thread(() -> {
-            while (this.running) {
+            while (true) {
+                System.out.println("kut");
                 try {
                     String input = "";
                     input = this.in.readUTF();
                     System.out.println("Client trying thread");
                     while (input.contains("<")) {
+                        System.out.println("Client: started to collect input");
                         input += this.in.readUTF();
                         if (input.contains(">")) {
+                            System.out.println("Client: decoding input");
                             Scanner scanner = new Scanner(input);
                             scanner.useDelimiter("<");
                             scanner.next();
@@ -49,36 +63,28 @@ public class Client implements Runnable {
                             input = input.substring(1);
 
                             //System.out.println(input);
-                            System.out.println(input);
                             this.server.receiveJson((JSONObject) parser.parse(input));
                             System.out.println("Client: blockdata updated");
                             break;
                         }
                     }
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    //Thread.sleep(100);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
                 } catch (ParseException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
                     e.printStackTrace();
+                    System.out.println("error");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    System.out.println("errooooor");
                 }
             }
         }).start();
 
-
-        try {
-            this.in = new DataInputStream(this.socket.getInputStream());
-            this.out = new DataOutputStream(this.socket.getOutputStream());
-            this.writer = new OutputStreamWriter(this.out, StandardCharsets.UTF_8);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(this.in));
-
-            while (running) {
-                this.sendJson(this.server.getBlockData());
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
+        while (running) {
+            this.sendJson(this.server.getBlockData());
         }
 
     }
