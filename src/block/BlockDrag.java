@@ -141,9 +141,11 @@ public class BlockDrag extends Application {
         }
 
     }
-    
-    public static void main(String[] args) {
-        launch(BlockDrag.class);
+
+    @Override
+    public void stop() throws Exception {
+        this.blockClient.stop();
+        super.stop();
     }
 
     private void mousePressed(MouseEvent e) {

@@ -19,10 +19,12 @@ public class BlockClient {
     private DataInputStream in;
     private DataOutputStream out;
     private JSONObject blockData;
+    private boolean running;
 
     public BlockClient(String host, int port) {
         this.host = host;
         this.port = port;
+        this.running = true;
     }
 
     public boolean connect() {
@@ -36,7 +38,7 @@ public class BlockClient {
              * This thread parses the complete json text
              */
             new Thread(() -> {
-                while (true) {
+                while (this.running) {
                     try {
                         String input = this.in.readUTF();
                         while (input.contains("<")) {
@@ -84,6 +86,10 @@ public class BlockClient {
         }
 
         return true;
+    }
+
+    public void stop() {
+        this.running = false;
     }
 
     private void sendBlockData(JSONObject jsonObject) {
