@@ -59,7 +59,7 @@ public class BlockDrag extends Application {
         sendToServerButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-
+                blockClient.sendBlockData(writeJson());
             }
         });
 

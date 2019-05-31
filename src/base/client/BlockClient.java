@@ -9,6 +9,7 @@ import org.json.simple.parser.ParseException;
 import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
 public class BlockClient {
@@ -18,6 +19,7 @@ public class BlockClient {
     private int port;
     private DataInputStream in;
     private DataOutputStream out;
+    private OutputStreamWriter writer;
     private JSONObject blockData;
     private boolean running;
 
@@ -32,6 +34,7 @@ public class BlockClient {
             this.socket = new Socket(this.host, this.port);
             this.in = new DataInputStream(this.socket.getInputStream());
             this.out = new DataOutputStream(this.socket.getOutputStream());
+            this.writer = new OutputStreamWriter(this.out, StandardCharsets.UTF_8);
             JSONParser parser = new JSONParser();
 
             /**
@@ -92,9 +95,10 @@ public class BlockClient {
         this.running = false;
     }
 
-    private void sendBlockData(JSONObject jsonObject) {
+    public void sendBlockData(JSONObject jsonObject) {
         try {
-            this.out.writeUTF(jsonObject.toJSONString());
+            this.writer.write("<" + jsonObject.toJSONString() + ">");
+            this.writer.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }

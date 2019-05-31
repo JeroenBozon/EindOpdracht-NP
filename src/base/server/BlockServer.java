@@ -88,6 +88,10 @@ public class BlockServer {
         return true;
     }
 
+    public void removeClient(Client client) {
+        this.clients.remove(client);
+    }
+
     public void recieveJson(JSONObject jsonObject) {
         this.blockData = jsonObject;
     }
