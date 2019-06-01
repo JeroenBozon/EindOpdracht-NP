@@ -21,6 +21,7 @@ public class BlockClient {
     private DataOutputStream out;
     private OutputStreamWriter writer;
     private JSONObject blockData;
+    private JSONObject sendData;
     private boolean running;
 
     public BlockClient(String host, int port) {
@@ -33,7 +34,7 @@ public class BlockClient {
         try {
             this.socket = new Socket(this.host, this.port);
             this.in = new DataInputStream(this.socket.getInputStream());
-            this.out = new DataOutputStream(this.socket.getOutputStream());
+            this.out = new DataOutputStream(new BufferedOutputStream(this.socket.getOutputStream()));
             this.writer = new OutputStreamWriter(this.out, StandardCharsets.UTF_8);
             JSONParser parser = new JSONParser();
 
@@ -80,7 +81,34 @@ public class BlockClient {
                 }
 
             }).start();
+
+
             this.sendBlockData(this.blockData);
+
+            new Thread(() -> {
+                while(running) {
+                    try {
+                        this.writer.write("<" + this.sendData.toJSONString() + ">");
+                        this.writer.flush();
+
+                        //System.out.println(this.sendData.toJSONString());
+
+                        //Thread.sleep(200);
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (NullPointerException e){
+                        System.out.println("Data not available yet, retrying in a bit...");
+                        try {
+                            Thread.sleep(2000);
+                        } catch (InterruptedException e1) {
+                            e1.printStackTrace();
+                        }
+                        //} catch (InterruptedException e) {
+                        //e.printStackTrace();
+                    }
+                }
+            }).start();
 
             //this.socket.close();
 
@@ -102,27 +130,7 @@ public class BlockClient {
 
     public void sendBlockData(JSONObject jsonObject) {
         System.out.println("try sendBlockData");
-
-        new Thread(() -> {
-            while(running) {
-                try {
-                    this.writer.write("<" + jsonObject.toJSONString() + ">");
-                    this.writer.flush();
-
-                    System.out.println("try done");
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (NullPointerException e){
-                    System.out.println("Data not available yet");
-                    try {
-                        Thread.sleep(5000);
-                    } catch (InterruptedException e1) {
-                        e1.printStackTrace();
-                    }
-                }
-            }
-        }).start();
+        this.sendData = jsonObject;
     }
 
     public JSONObject getBlockData() throws NullPointerException {

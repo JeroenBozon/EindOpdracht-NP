@@ -69,7 +69,7 @@ public class Client implements Runnable {
 
         try {
             this.in = new DataInputStream(this.socket.getInputStream());
-            this.out = new DataOutputStream(this.socket.getOutputStream());
+            this.out = new DataOutputStream(new BufferedOutputStream(this.socket.getOutputStream()));
             this.writer = new OutputStreamWriter(this.out, StandardCharsets.UTF_8);
             BufferedReader reader = new BufferedReader(new InputStreamReader(this.in));
 
@@ -89,8 +89,11 @@ public class Client implements Runnable {
         try {
             this.writer.write("<" + jsonObject.toJSONString() + ">");
             this.writer.flush();
-            //} catch (IOException e) {
-            //e.printStackTrace();
+
+            //System.out.println(jsonObject.toJSONString());
+
+            //Thread.sleep(200);
+
         } catch (Exception e) {
             //e.printStackTrace();
             this.server.removeClient(this);

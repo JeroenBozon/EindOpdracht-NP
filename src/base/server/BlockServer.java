@@ -101,4 +101,12 @@ public class BlockServer {
     public JSONObject getBlockData() {
         return blockData;
     }
+
+    public synchronized JSONObject getChangeData(JSONObject jsonObject) {
+        if (jsonObject != null) {
+            this.blockData = jsonObject;
+        }
+        return this.blockData;
+    }
+
 }
