@@ -58,11 +58,9 @@ public class BlockClient {
                             }
                         }
                     } catch (IOException e) {
-                        //e.printStackTrace();
-                        System.out.println("ioexception");
+                        System.out.println("IOEXCEPTION");
                     } catch (ParseException e) {
-                        //e.printStackTrace();
-                        System.out.println("parseexception");
+                        System.out.println("PARSEEXCEPTION");
                     } catch (Exception e) {
                         System.out.println("Could not connect.");
                         this.running = false;

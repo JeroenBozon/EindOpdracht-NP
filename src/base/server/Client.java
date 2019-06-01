@@ -34,7 +34,6 @@ public class Client implements Runnable {
                 try {
                     String input = "";
                     input = this.in.readUTF();
-                    System.out.println("Client trying thread");
                     while (input.contains("<")) {
                         input += this.in.readUTF();
                         if (input.contains(">")) {
@@ -45,10 +44,7 @@ public class Client implements Runnable {
                             input = scanner.next();
                             input = input.substring(1);
 
-                            //System.out.println(input);
-                            System.out.println(input);
                             this.server.receiveJson((JSONObject) parser.parse(input));
-                            System.out.println("Client: blockdata updated");
                             break;
                         }
                     }

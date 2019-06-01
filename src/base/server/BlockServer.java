@@ -31,7 +31,6 @@ public class BlockServer {
         try (Reader reader = new FileReader("data.json")) {
             JSONObject jsonObject = (JSONObject) parser.parse(reader);
             this.blockData = jsonObject;
-            System.out.println("Read JSON");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
