@@ -9,13 +9,10 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 public class BlockServer {
     private ServerSocket server;
     private int port;
-    private Thread serverUserSearchThread;
-    private Thread serverDataThread;
     private List<Client> clients;
     private List<Thread> threads;
     private JSONObject blockData;
@@ -95,18 +92,10 @@ public class BlockServer {
 
     public void receiveJson(JSONObject jsonObject) {
         this.blockData = jsonObject;
-        System.out.println("Received JSON");
     }
 
     public JSONObject getBlockData() {
         return blockData;
     }
-
-//    public synchronized JSONObject getChangeData(JSONObject jsonObject) {
-//        if (jsonObject != null) {
-//            this.blockData = jsonObject;
-//        }
-//        return this.blockData;
-//    }
 
 }

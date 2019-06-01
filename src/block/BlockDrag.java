@@ -1,7 +1,6 @@
 package block;
 
 import base.client.BlockClient;
-import base.server.Client;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -110,7 +109,7 @@ public class BlockDrag extends Application {
 
     private void setupClient() {
         boolean dataReceived = false;
-        this.blockClient = new BlockClient("localhost", 10000);
+        this.blockClient = new BlockClient("localhost", 8936);
         this.blockClient.connect();
 
         while (!dataReceived) {
@@ -183,12 +182,10 @@ public class BlockDrag extends Application {
             blockInfo.put("blockX", block.getX());
             blockInfo.put("blockY", block.getY());
             blockArrayInfo.add(blockInfo);
-            System.out.println("Block updated");
         }
         JSONObject blockData = new JSONObject();
         blockData.put("blockdata", blockArrayInfo);
 
-        System.out.println("Data updated");
         return blockData;
     }
 
@@ -197,7 +194,6 @@ public class BlockDrag extends Application {
             File saveFile = new File("data.json");
             PrintWriter file = new PrintWriter(new FileWriter(saveFile));
             file.write(blockData.toJSONString());
-            System.out.println("printed");
             file.flush();
             file.close();
         } catch (IOException e) {

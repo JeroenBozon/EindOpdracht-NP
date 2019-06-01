@@ -6,6 +6,7 @@ import org.json.simple.parser.ParseException;
 
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
@@ -22,10 +23,6 @@ public class Client implements Runnable {
         this.socket = socket;
         this.server = blockServer;
         this.running = true;
-    }
-
-    public void sendBlockData() {
-
     }
 
     @Override
@@ -55,20 +52,21 @@ public class Client implements Runnable {
                             break;
                         }
                     }
+                } catch (SocketException e) {
+                    System.out.println("Disconnecting client...");
+                    this.running = false;
                 } catch (ParseException e) {
-                    e.printStackTrace();
+                    System.out.println("PARSE EXCEPTION");
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    System.out.println("IO EXCEPTION");
                 }
             }
         }).start();
-
 
         try {
             this.in = new DataInputStream(this.socket.getInputStream());
             this.out = new DataOutputStream(new BufferedOutputStream(this.socket.getOutputStream()));
             this.writer = new OutputStreamWriter(this.out, StandardCharsets.UTF_8);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(this.in));
 
             while (running) {
                 this.sendJson(this.server.getBlockData());
@@ -82,25 +80,15 @@ public class Client implements Runnable {
 
     //sends utf
     public void sendJson(JSONObject jsonObject) {
-        //todo send json to server
         try {
             this.writer.write("<" + jsonObject.toJSONString() + ">");
             this.writer.flush();
 
-            //System.out.println(jsonObject.toJSONString());
-
-            //Thread.sleep(200);
-
         } catch (Exception e) {
-            //e.printStackTrace();
             this.server.removeClient(this);
             this.running = false;
             System.out.println("Client disconnected from " + this.socket.getInetAddress().getHostAddress() + ".");
         }
-    }
-
-    public void recieveJson(JSONObject jsonObject) {
-        this.server.receiveJson(jsonObject);
     }
 
 }

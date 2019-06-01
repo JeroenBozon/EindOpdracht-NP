@@ -1,6 +1,5 @@
 package base;
 
-import base.client.BlockClient;
 import block.BlockDrag;
 import javafx.application.Application;
 

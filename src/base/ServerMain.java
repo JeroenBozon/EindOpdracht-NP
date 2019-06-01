@@ -6,7 +6,7 @@ public class ServerMain {
 
     public static void main(String[] args) {
 
-        int port = 10000;
+        int port = 8936;
         BlockServer blockServer = new BlockServer(port);
         blockServer.start();
 
