@@ -16,7 +16,6 @@ public class Client implements Runnable {
     private DataOutputStream out;
     private DataInputStream in;
     private OutputStreamWriter writer;
-    private ObjectOutputStream objectOutputStream;
     private boolean running;
 
     public Client(Socket socket, BlockServer blockServer) {
@@ -81,9 +80,22 @@ public class Client implements Runnable {
             this.writer.flush();
 
         } catch (Exception e) {
-            this.server.removeClient(this);
-            this.running = false;
+            this.stop();
             System.out.println("Client disconnected from " + this.socket.getInetAddress().getHostAddress() + ".");
+        }
+    }
+
+    public void stop() {
+        System.out.println("Shutting down client.");
+        this.server.removeClient(this);
+        this.running = false;
+        try {
+            this.in.close();
+            this.out.close();
+            this.writer.close();
+            this.socket.close();
+        } catch (IOException e) {
+            System.out.println("IO Exception while shutting down client!");
         }
     }
 

@@ -216,7 +216,7 @@ public class BlockDrag extends Application {
 
         this.draw(this.graphics);
     }
-    
+
     private int getJsonInt(Object object) {
         try {
             return Math.toIntExact( (long) object);

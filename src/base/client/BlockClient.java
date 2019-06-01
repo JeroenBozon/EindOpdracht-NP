@@ -58,7 +58,9 @@ public class BlockClient {
                             }
                         }
                     } catch (IOException e) {
-                        System.out.println("IOEXCEPTION");
+                        //System.out.println("IOEXCEPTION");
+                        System.out.println("Tried reading while shutting down.");
+                        this.stop();
                     } catch (ParseException e) {
                         System.out.println("PARSEEXCEPTION");
                     } catch (Exception e) {
@@ -106,9 +108,12 @@ public class BlockClient {
     public void stop() {
         this.running = false;
         try {
+            this.in.close();
+            this.out.close();
+            this.writer.close();
             this.socket.close();
         } catch (IOException e) {
-            System.out.println("IO Exception when trying to close socket!");
+            System.out.println("IO Exception when trying to close BlockClient!");
         }
     }
 
