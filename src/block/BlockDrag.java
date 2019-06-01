@@ -130,6 +130,68 @@ public class BlockDrag extends Application {
             }
         }
     }
+
+    private JSONObject writeJson() {
+        JSONArray blockArrayInfo = new JSONArray();
+
+        for (Block block : this.blocks) {
+            JSONObject blockInfo = new JSONObject();
+            blockInfo.put("blockID", block.getBlockId());
+            blockInfo.put("blockX", block.getX());
+            blockInfo.put("blockY", block.getY());
+            blockArrayInfo.add(blockInfo);
+            System.out.println("Block updated");
+            System.out.println(blockInfo);
+        }
+        JSONObject blockData = new JSONObject();
+        blockData.put("blockdata", blockArrayInfo);
+
+        System.out.println("Data updated");
+        return blockData;
+    }
+
+//    private void saveJson(JSONObject blockData) {
+//        try {
+//            File saveFile = new File("data.json");
+//            PrintWriter file = new PrintWriter(new FileWriter(saveFile));
+//            file.write(blockData.toJSONString());
+//            System.out.println("printed");
+//            file.flush();
+//            file.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
+
+    public void updateBlocks(JSONObject blockData) {
+        JSONArray jsonArray = (JSONArray) blockData.get("blockdata");
+
+        for (Block block : this.blocks) {
+            for (int i = 0; i < jsonArray.size(); i++) {
+                JSONObject jsonObject = (JSONObject) jsonArray.get(i);
+                //System.out.println("Blockdrag: in for loop");
+                if ( this.getJsonInt(jsonObject.get("blockID")) == block.getBlockId() ) {
+                    block.setX(this.getJsonInt(jsonObject.get("blockX")));
+                    block.setY(this.getJsonInt(jsonObject.get("blockY")));
+
+                    System.out.println("BlockID: " + block.getBlockId() + " X: " + block.getX() + " Y: " + block.getY());
+                    //System.out.println("Blockdrag: updateblocks completed");
+                }
+            }
+        }
+
+        this.draw(this.graphics);
+    }
+
+    //todo liever niet dit
+    private int getJsonInt(Object object) {
+        try {
+            return Math.toIntExact( (long) object);
+        } catch (Exception e) {
+            System.out.println("Could not convert to int!");
+        }
+        return -1;
+    }
     
     
     public void draw(FXGraphics2D graphics) {
@@ -177,61 +239,6 @@ public class BlockDrag extends Application {
         draw(this.graphics);
     }
 
-    private JSONObject writeJson() {
-        JSONArray blockArrayInfo = new JSONArray();
 
-        for (Block block : this.blocks) {
-            JSONObject blockInfo = new JSONObject();
-            blockInfo.put("blockID", block.getBlockId());
-            blockInfo.put("blockX", block.getX());
-            blockInfo.put("blockY", block.getY());
-            blockArrayInfo.add(blockInfo);
-            System.out.println("Block updated");
-        }
-        JSONObject blockData = new JSONObject();
-        blockData.put("blockdata", blockArrayInfo);
-
-        System.out.println("Data updated");
-        return blockData;
-    }
-
-    private void saveJson(JSONObject blockData) {
-        try {
-            File saveFile = new File("data.json");
-            PrintWriter file = new PrintWriter(new FileWriter(saveFile));
-            file.write(blockData.toJSONString());
-            System.out.println("printed");
-            file.flush();
-            file.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void updateBlocks(JSONObject blockData) {
-        JSONArray jsonArray = (JSONArray) blockData.get("blockdata");
-
-        for (Block block : this.blocks) {
-            for (int i = 0; i < jsonArray.size(); i++) {
-                JSONObject jsonObject = (JSONObject) jsonArray.get(i);
-                if ( this.getJsonInt(jsonObject.get("blockID")) == block.getBlockId() ) {
-                    block.setX(this.getJsonInt(jsonObject.get("blockX")));
-                    block.setY(this.getJsonInt(jsonObject.get("blockY")));
-                }
-            }
-        }
-
-        this.draw(this.graphics);
-    }
-
-    //todo liever niet dit
-    private int getJsonInt(Object object) {
-        try {
-            return Math.toIntExact( (long) object);
-        } catch (Exception e) {
-            System.out.println("Could not convert to int!");
-        }
-        return -1;
-    }
 
 }

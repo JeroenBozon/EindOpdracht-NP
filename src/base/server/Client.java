@@ -24,10 +24,6 @@ public class Client implements Runnable {
         this.running = true;
     }
 
-    public void sendBlockData() {
-
-    }
-
     @Override
     public void run() {
 
@@ -45,16 +41,16 @@ public class Client implements Runnable {
 
         new Thread(() -> {
             while (true) {
-                System.out.println("kut");
+//                System.out.println("Client: method run() starts and is in first while loop");
                 try {
                     String input = "";
                     input = this.in.readUTF();
-                    System.out.println("Client trying thread");
+//                    System.out.println("Client: run() has reached try loop");
                     while (input.contains("<")) {
-                        System.out.println("Client: started to collect input");
+//                        System.out.println("Client: started to collect input and is in second while loop");
                         input += this.in.readUTF();
                         if (input.contains(">")) {
-                            System.out.println("Client: decoding input");
+//                            System.out.println("Client: decoding input starting");
                             Scanner scanner = new Scanner(input);
                             scanner.useDelimiter("<");
                             scanner.next();
@@ -64,7 +60,7 @@ public class Client implements Runnable {
 
                             //System.out.println(input);
                             this.server.receiveJson((JSONObject) parser.parse(input));
-                            System.out.println("Client: blockdata updated");
+                            //System.out.println("Client: blockdata sent to server");
                             break;
                         }
                     }
@@ -84,6 +80,7 @@ public class Client implements Runnable {
         }).start();
 
         while (running) {
+            //System.out.println(this.server.getBlockData());
             this.sendJson(this.server.getBlockData());
         }
 

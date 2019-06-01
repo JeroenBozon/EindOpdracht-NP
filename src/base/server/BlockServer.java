@@ -34,7 +34,7 @@ public class BlockServer {
         try (Reader reader = new FileReader("data.json")) {
             JSONObject jsonObject = (JSONObject) parser.parse(reader);
             this.blockData = jsonObject;
-            System.out.println("Read JSON");
+            //System.out.println("Server: read JSON");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -95,7 +95,15 @@ public class BlockServer {
 
     public void receiveJson(JSONObject jsonObject) {
         this.blockData = jsonObject;
-        System.out.println("Received JSON");
+
+        try (FileWriter file = new FileWriter("data.json")) {
+            file.write(jsonObject.toJSONString());
+            //System.out.println("Server: Successfully Copied JSON Object to File...");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("Server: received JSON");
     }
 
     public JSONObject getBlockData() {
