@@ -7,6 +7,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.*;
+import java.net.ConnectException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
@@ -77,6 +78,9 @@ public class BlockClient {
                     } catch (ParseException e) {
                         //e.printStackTrace();
                         System.out.println("parseexception");
+                    } catch (Exception e) {
+                        System.out.println("Could not connect.");
+                        this.running = false;
                     }
                 }
 

@@ -55,9 +55,6 @@ public class Client implements Runnable {
                             break;
                         }
                     }
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
                 } catch (ParseException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
